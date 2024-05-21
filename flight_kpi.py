@@ -76,13 +76,12 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         elevation_sol = elevation_data.get((lat, lon))
         data.append([time, altitude_mer, lat, lon, elevation_sol, fc,time])
 
-    df = pd.DataFrame(data, columns=['datetime', 'altitude_mer', 'lat', 'lon', 'elevation_sol', 'fc', 'time_hm'])
+    df = pd.DataFrame(data, columns=['datetime', 'altitude_mer', 'lat', 'lon', 'elevation_sol', 'fc', 'time_hms'])
     # on garde une seule valeur par seconde
-    df['datetime'] = pd.to_datetime(df['datetime']).dt.tz_convert('Europe/Paris').dt.floor('min')
-    df = df.drop_duplicates(subset='datetime', keep='first')
+    df['datetime'] = pd.to_datetime(df['datetime']).dt.tz_convert('Europe/Paris')
     df['datetime'] = df['datetime'].dt.strftime('%d/%m/%Y %H:%M:%S')
-    df['time_hm'] = pd.to_datetime(df['time_hm']).dt.tz_convert('Europe/Paris').dt.floor('min')
-    df['time_hm'] = df['time_hm'].dt.strftime('%H:%M')
+    df['time_hms'] = pd.to_datetime(df['time_hms']).dt.tz_convert('Europe/Paris')
+    df['time_hms'] = df['time_hms'].dt.strftime('%H:%M:%S')
     df['altitude_mer'] = df['altitude_mer'].astype(float).round(1)
     df['elevation_sol'] = df['altitude_mer']  - df['elevation_sol'].astype(float)
     df['elevation_sol'] = df['elevation_sol'].astype(float).round(1)
@@ -101,12 +100,12 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
     fig, ax1 = plt.subplots(figsize=(15, 5))
 
     # axe de gauche
-    ax1.plot(df['time_hm'], df['delta_fc'], color='green',  label='Delta FC')
+    ax1.plot(df['time_hms'], df['delta_fc'], color='green',  label='Delta FC')
     ax1.set_xlabel('Heure (finesse point : ' + str(ecartTemps)  + ')')
     ax1.tick_params(axis='y')
 
     nb_lignes = df.shape[0]
-    ecart_tick = nb_lignes//20
+    ecart_tick = nb_lignes//12
     for i, label in enumerate(ax1.xaxis.get_ticklabels()):
         if i % ecart_tick != 0:  # on rend visible que 1 tick sur n
             label.set_visible(False)
@@ -115,7 +114,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales rouges quand  fc augmente et vario > 2
         mask_red = (df['delta_fc'] > 0) & (df['vario'] > optionsAnalyse[1])
         index_legend = 0
-        for i in df['time_hm'][mask_red]:
+        for i in df['time_hms'][mask_red]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='red', alpha=1, label='Vario > '+ str(optionsAnalyse[1])+' et FC montante')
             else:
@@ -126,7 +125,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales bleues quand fc augmenteet vario < -3
         mask_blue = (df['delta_fc'] >0) & (df['vario'] < optionsAnalyse[0])
         index_legend = 0
-        for i in df['time_hm'][mask_blue]:
+        for i in df['time_hms'][mask_blue]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='blue', alpha=1, label='Vario < '+ str(optionsAnalyse[0]) +' et FC montante')
             else:
@@ -136,7 +135,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales vertes quand fc stable ou descendante et vario < -3
         mask_green = (df['delta_fc'] <=0) & (df['vario'] < optionsAnalyse[0])
         index_legend = 0
-        for i in df['time_hm'][mask_green]:
+        for i in df['time_hms'][mask_green]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='green', alpha=0.5, label='Vario < '+ str(optionsAnalyse[0]) +' et FC stable')
             else:
@@ -146,7 +145,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales vertes quand fc stable ou descendante et vario > 2
         mask_yellow = (df['delta_fc'] <=0) & (df['vario'] > optionsAnalyse[1])
         index_legend = 0
-        for i in df['time_hm'][mask_yellow]:
+        for i in df['time_hms'][mask_yellow]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='yellow', alpha=0.5, label='Vario > '+ str(optionsAnalyse[1]) +' et FC stable')
             else:
@@ -154,10 +153,10 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
             index_legend+=1
 
         # vario a droite
-        ax1.plot(df['time_hm'], df['vario'], color='grey', label='Vario')
+        ax1.plot(df['time_hms'], df['vario'], color='grey', label='Vario')
         # Créer un deuxième axe des y pour la FC
         ax2 = ax1.twinx()
-        ax2.plot(df['time_hm'], df['fc'], color='purple', label='FC')
+        ax2.plot(df['time_hms'], df['fc'], color='purple', label='FC')
 
         # Titre du graphique
         plt.title('Vario et variation FC dans le temps')
@@ -167,7 +166,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales rouges quand elevation_sol < 100 et fc augmente
         mask_red = (df['delta_fc'] > 1) & (df['elevation_sol'] < 100)
         index_legend = 0
-        for i in df['time_hm'][mask_red]:
+        for i in df['time_hms'][mask_red]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='red', alpha=1, label='Elevation sol < '+ str(optionsAnalyse[0]) +'m et FC montante')
             else:
@@ -177,7 +176,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         # Ajouter des lignes verticales vertes quand fc stable ou descendante et vario < -2
         mask_green = (df['delta_fc'] <=1) & (df['elevation_sol'] < optionsAnalyse[0])
         index_legend = 0
-        for i in df['time_hm'][mask_green]:
+        for i in df['time_hms'][mask_green]:
             if index_legend == 0:
                 ax1.axvline(x=i, color='green', alpha=0.5, label='Elevation sol < '+ str(optionsAnalyse[0]) +'m et FC stable')
             else:
@@ -186,7 +185,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
             
         # Créer un deuxième axe des y pour la FC
         ax2 = ax1.twinx()
-        ax2.plot(df['time_hm'], df['elevation_sol'], color='purple', label='Elevation sol (m)')
+        ax2.plot(df['time_hms'], df['elevation_sol'], color='purple', label='Elevation sol (m)')
         
         ax2.axhline(y=optionsAnalyse[0], color='red', alpha=1, label='Seuil '+ str(optionsAnalyse[0]) +' m')
 
@@ -214,12 +213,12 @@ if __name__ == "__main__":
     parser.add_argument("--outputDir", help="Chemin vers le dossier de sortie")
     parser.add_argument("--analyse", help="Choix du type de sortie du graph : vario ou altitude" , default='vario')
     parser.add_argument('--optionsAnalyse', type=str, help='Option : vario => [varioDescendant, varioAscendant], altitude => [seuil]', default='[-3,2]')
-    parser.add_argument("--ecartPoint", help="Espacement des points dans le temps (60s, 10s ...)" , default='60s')
+    parser.add_argument("--ecartPoint", help="Espacement des points dans le temps (1min, 10s ...)" , default='60s')
     args = parser.parse_args()
     optionsAnalyse = ast.literal_eval(args.optionsAnalyse)
     process_data(args.gpxFile, args.outputDir, args.analyse, optionsAnalyse, args.ecartPoint)
 
 
 
-# exemple d'utilisation  : python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "60s"
-#process_data("dir\\vol2.gpx", "dir\\", "vario", [-3,2], "60s")
+# exemple d'utilisation  : python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "10s"
+#process_data("dir\\vol2.gpx", "dir\\", "vario", [-3,2], "10s")
