@@ -16,12 +16,13 @@ Le script produit de base :
 - 1 fichier image selon l'axe d'analyse choisi : 'vario' ou 'altitude'
 
 Liste des paramètres à renseigner au lancement du script :
---gpxFile : Chemin vers le fichier gpx 
---outputDir : Chemin vers le dossier de sortie
---analyse : Choix du type de sortie du graph : vario ou altitude 
---optionsAnalyse: tableau de paramètre : vario => [varioDescendant (float), varioAscendant  (float) ], altitude => [seuil  (float)]
---ecartPoint Espacement des points dans le temps exemple : 1min, 10s ...
+- --gpxFile : Chemin vers le fichier gpx 
+- --outputDir : Chemin vers le dossier de sortie
+- --analyse : Choix du type de sortie du graph : vario ou altitude 
+- --optionsAnalyse: tableau de paramètre : vario => [varioDescendant (float), varioAscendant  (float) ], altitude => [seuil  (float), '>'['<']
+- --ecartPoint Espacement des points dans le temps exemple : 1min, 10s ...
 
 exemples d'utilisation  : 
+
 python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "vario" --optionsAnalyse "[-3,2]" --ecartPoint "30s"
-python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "60s"
+python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "1min"
