@@ -12,7 +12,7 @@ Plusieurs infos en sont déduites :
 - variation FC
 
 Le script produit de base :
-- 1 fichier csv brut avec toutes les informations récupérées du fichier gpx et enrichies des inforations déduites
+- 1 fichier csv brut avec toutes les informations récupérées du fichier gpx et enrichies des informations déduites
 - 1 fichier image selon l'axe d'analyse choisi : 'vario' ou 'altitude'
 
 Liste des paramètres à renseigner au lancement du script :
@@ -21,7 +21,7 @@ Liste des paramètres à renseigner au lancement du script :
 - --analyse : Choix du type de sortie du graph : vario ou altitude 
 - --optionsAnalyse: tableau de paramètre :
 > - vario => [varioDescendant (float), varioAscendant  (float) ]
-> - altitude => [seuil  (float), '>'['<']
+> - altitude => [seuil  (float), '>'|'<']
 - --ecartPoint Espacement des points dans le temps exemple : 1min, 10s ...
 
 exemples d'utilisation  : 
