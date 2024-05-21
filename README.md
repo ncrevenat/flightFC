@@ -3,7 +3,7 @@ Analyse de la FC sur des kpis de vol
 Certaines montres permettent de récupérer la fréquence cardiaque (FC) dans la balise optionnelle hr (heart rate) d'un fichier GPX.
 Dans un vol en parapente la fréquence cardiaque évolue. Les hypothèses d'analyse sont les suivantes :
 - la FC est impactée par des variations de l'altitude importante (vario positif ou négatif) => analyse 'vario'
-- la FC est impactée par la proximité du relief => analyse 'altitude'
+- la FC est impactée par la proximité du relief ou son grand éloignement => analyse 'altitude'
 
 Le script prend en paramètre un fichier gpx qui comporte la balise hr en plus des infos standards (latitude, longitude, altitude par rapport au niveau de la mer).
 Plusieurs infos en sont déduites :
