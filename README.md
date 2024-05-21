@@ -20,7 +20,7 @@ Liste des paramètres à renseigner au lancement du script :
 --outputDir : Chemin vers le dossier de sortie
 --analyse : Choix du type de sortie du graph : vario ou altitude 
 --optionsAnalyse: tableau de paramètre : vario => [varioDescendant (float), varioAscendant  (float) ], altitude => [seuil  (float)]
---ecartPoint Espacement des points dans le temps exemple : 60s, 10s ...
+--ecartPoint Espacement des points dans le temps exemple : 1min, 10s ...
 
 exemples d'utilisation  : 
 python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "vario" --optionsAnalyse "[-3,2]" --ecartPoint "30s"
