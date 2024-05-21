@@ -10,7 +10,6 @@ import matplotlib.dates as mdates
 from datetime import datetime
 import requests
 import ast
-import operator
 
 def get_elevation_data(lat_lon_pairs, lot):
     base_url = "https://wxs.ign.fr/calcul/alti/rest/elevation.json"
@@ -34,10 +33,6 @@ def parse_gpx_file(gpx_file):
     ns = {'default': 'http://www.topografix.com/GPX/1/1'}
     lat_lon_pairs = [[float(pt.attrib['lat']), float(pt.attrib['lon'])] for pt in root.findall('.//default:trkpt', ns)]
     return lat_lon_pairs
-
-def returnoperand(op):
-    ops = {'>': operator.gt, '<': operator.lt}
-    return ops.op
 
 
 
