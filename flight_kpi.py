@@ -10,7 +10,7 @@ import matplotlib.dates as mdates
 from datetime import datetime
 import requests
 import ast
-
+import operator
 
 def get_elevation_data(lat_lon_pairs, lot):
     base_url = "https://wxs.ign.fr/calcul/alti/rest/elevation.json"
@@ -34,6 +34,10 @@ def parse_gpx_file(gpx_file):
     ns = {'default': 'http://www.topografix.com/GPX/1/1'}
     lat_lon_pairs = [[float(pt.attrib['lat']), float(pt.attrib['lon'])] for pt in root.findall('.//default:trkpt', ns)]
     return lat_lon_pairs
+
+def returnoperand(op):
+    ops = {'>': operator.gt, '<': operator.lt}
+    return ops.op
 
 
 
@@ -164,21 +168,33 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
 
     if type_analyse == "altitude":                   
         # Ajouter des lignes verticales rouges quand elevation_sol < 100 et fc augmente
-        mask_red = (df['delta_fc'] > 1) & (df['elevation_sol'] < optionsAnalyse[0])
+        if(optionsAnalyse[1] == '>'):
+            mask_red = (df['delta_fc'] >= 1) & (df['elevation_sol'] > optionsAnalyse[0])
+        elif(optionsAnalyse[1] == '<'):
+            mask_red = (df['delta_fc'] >= 1) & (df['elevation_sol'] < optionsAnalyse[0])
+        else:
+            mask_red = (df['delta_fc'] >= 1) & (df['elevation_sol'] < optionsAnalyse[0])
+            
         index_legend = 0
         for i in df['time_hms'][mask_red]:
             if index_legend == 0:
-                ax1.axvline(x=i, color='red', alpha=1, label='Elevation sol < '+ str(optionsAnalyse[0]) +'m et FC montante')
+                ax1.axvline(x=i, color='red', alpha=1, label='Elevation '+ str(optionsAnalyse[1]) + ' '+ str(optionsAnalyse[0]) +'m et FC montante')
             else:
                 ax1.axvline(x=i, color='red', alpha=1)
             index_legend+=1
 
         # Ajouter des lignes verticales vertes quand fc stable ou descendante et vario < -2
-        mask_green = (df['delta_fc'] <=1) & (df['elevation_sol'] < optionsAnalyse[0])
+        if(optionsAnalyse[1] == '>'):
+            mask_green = (df['delta_fc'] <1) & (df['elevation_sol'] > optionsAnalyse[0])
+        elif(optionsAnalyse[1] == '<'):
+            mask_green = (df['delta_fc'] <1) & (df['elevation_sol'] < optionsAnalyse[0])
+        else:
+            mask_green = (df['delta_fc'] <1) & (df['elevation_sol'] < optionsAnalyse[0])
+
         index_legend = 0
         for i in df['time_hms'][mask_green]:
             if index_legend == 0:
-                ax1.axvline(x=i, color='green', alpha=0.5, label='Elevation sol < '+ str(optionsAnalyse[0]) +'m et FC stable')
+                ax1.axvline(x=i, color='green', alpha=0.5, label='Elevation sol '+ str(optionsAnalyse[1]) + ' '+  str(optionsAnalyse[0]) +'m et FC stable')
             else:
                 ax1.axvline(x=i, color='green', alpha=0.5)
             index_legend+=1
@@ -187,7 +203,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
         ax2 = ax1.twinx()
         ax2.plot(df['time_hms'], df['elevation_sol'], color='purple', label='Elevation sol (m)')
         
-        ax2.axhline(y=optionsAnalyse[0], color='red', alpha=1, label='Seuil '+ str(optionsAnalyse[0]) +' m')
+        ax2.axhline(y=optionsAnalyse[0], color='red', alpha=1, label='Seuil '+ str(optionsAnalyse[1]) + ' '+  str(optionsAnalyse[0]) +'m')
 
         # Titre du graphique
         plt.title('Elevation sol et variation FC dans le temps')
@@ -212,7 +228,7 @@ if __name__ == "__main__":
     parser.add_argument("--gpxFile", help="Chemin vers le fichier gpx")
     parser.add_argument("--outputDir", help="Chemin vers le dossier de sortie")
     parser.add_argument("--analyse", help="Choix du type de sortie du graph : vario ou altitude" , default='vario')
-    parser.add_argument('--optionsAnalyse', type=str, help='Option : vario => [varioDescendant, varioAscendant], altitude => [seuil]', default='[-3,2]')
+    parser.add_argument('--optionsAnalyse', type=str, help='Option : vario => [varioDescendant, varioAscendant], altitude => [seuil, "<"|">"]', default='[-3,2]')
     parser.add_argument("--ecartPoint", help="Espacement des points dans le temps (1min, 10s ...)" , default='60s')
     args = parser.parse_args()
     optionsAnalyse = ast.literal_eval(args.optionsAnalyse)
@@ -220,5 +236,5 @@ if __name__ == "__main__":
 
 
 
-# exemple d'utilisation  : python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "10s"
+# exemple d'utilisation  : python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100, >]" --ecartPoint "10s"
 #process_data("dir\\vol2.gpx", "dir\\", "vario", [-3,2], "10s")
