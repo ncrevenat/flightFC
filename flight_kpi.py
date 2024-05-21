@@ -164,7 +164,7 @@ def process_data(gpx_file,  outputDir, type_analyse, optionsAnalyse, ecartTemps)
 
     if type_analyse == "altitude":                   
         # Ajouter des lignes verticales rouges quand elevation_sol < 100 et fc augmente
-        mask_red = (df['delta_fc'] > 1) & (df['elevation_sol'] < 100)
+        mask_red = (df['delta_fc'] > 1) & (df['elevation_sol'] < optionsAnalyse[0])
         index_legend = 0
         for i in df['time_hms'][mask_red]:
             if index_legend == 0:
