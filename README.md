@@ -28,4 +28,4 @@ exemples d'utilisation  :
 
 python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "vario" --optionsAnalyse "[-3,2]" --ecartPoint "30s"
 
-python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100]" --ecartPoint "1min"
+python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100, '<']" --ecartPoint "1min"
