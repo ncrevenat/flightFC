@@ -23,9 +23,10 @@ Liste des paramètres à renseigner au lancement du script :
 > - vario => [varioDescendant (float), varioAscendant  (float) ]
 > - altitude => [seuil  (float), '>'|'<']
 - --ecartPoint Espacement des points dans le temps exemple : 1min, 10s ...
+- --XYgraph Graphes XY de FC/hauteur et FC/vario: False(par défaut) ou True
 
 exemples d'utilisation  : 
 
 python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "vario" --optionsAnalyse "[-3,2]" --ecartPoint "30s"
 
-python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100, '<']" --ecartPoint "1min"
+python flight_kpi.py --gpxFile "path\\to\\file\\vol.gpx" --outputDir "path\\to\\dir\\" --analyse "altitude" --optionsAnalyse "[100, '<']" --ecartPoint "1min" --XYgraph True
