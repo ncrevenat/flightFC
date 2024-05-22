@@ -1,4 +1,5 @@
 # author Nathalie C <n.crevenat@gmail.com>
+# contributor Augustin M
 # date 13/05/2024
 
 import argparse
@@ -96,6 +97,8 @@ def process_data(gpx_file, outputDir, type_analyse, optionsAnalyse, ecartTemps, 
     df.to_csv(outputDir + 'raw_' + time_gps_trace + '.csv', sep=';', index=False)
 
     # Créer une figure et un axe
+    
+    plt.style.use('dark_background')
     fig, ax1 = plt.subplots(figsize=(15, 5))
 
     # axe de gauche
@@ -206,7 +209,12 @@ def process_data(gpx_file, outputDir, type_analyse, optionsAnalyse, ecartTemps, 
     ax2.legend(loc='upper right')
 
     # Enregistrer le graphique en tant que fichier image
-    plt.savefig(outputDir + 'graph_' + type_analyse + '_' + time_gps_trace + '.png')
+    optAnalyseTxt = str(optionsAnalyse[1])
+    if (optAnalyseTxt== '>'):
+        optAnalyseTxt = "sup"
+    elif (optAnalyseTxt == '<'):
+        optAnalyseTxt = "inf"
+    plt.savefig(outputDir + 'graph_'+ type_analyse + '_' + str(optionsAnalyse[0]) + '_' +  optAnalyseTxt + '_'  + time_gps_trace + '.png')
 
     # Afficher le graphique
     plt.show()
