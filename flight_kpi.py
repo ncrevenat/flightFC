@@ -230,7 +230,7 @@ def process_data(gpx_file, outputDir, type_analyse, optionsAnalyse, ecartTemps, 
         ax.set_xlabel('Hauteur sol (m)')
         ax.set_ylabel('Fréquence cardiaque (bpm)')
         plt.colorbar(sc, ticks=[-5, -4, -3, -2, 0, 1, 2, 3, 4, 5], label='Vario (m/s)')
-        plt.savefig(outputDir + 'graph_XYhsol' + type_analyse + '_' + time_gps_trace + '.png')
+        plt.savefig(outputDir + 'graph_XYhsol_' + time_gps_trace + '.png')
         plt.show()
 
         # plot XY data FC/Vario
@@ -243,7 +243,7 @@ def process_data(gpx_file, outputDir, type_analyse, optionsAnalyse, ecartTemps, 
         ax.set_xlabel('Vario (m/s)')
         ax.set_ylabel('Fréquence cardiaque (bpm)')
         plt.colorbar(sc, label='hauteur sol')
-        plt.savefig(outputDir + 'graph_XYvario' + type_analyse + '_' + time_gps_trace + '.png')
+        plt.savefig(outputDir + 'graph_XYvario_' + time_gps_trace + '.png')
         plt.show()
 
 
